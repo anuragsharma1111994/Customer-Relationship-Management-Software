@@ -1,9 +1,18 @@
 from django import forms
-from django.forms.fields import CharField, IntegerField
+from django.forms import fields
+from .models import Lead
+class LeadModelForm(forms.ModelForm):
+    class Meta:
+        model = Lead
+        fields = (
+            'first_name',
+            'last_name',
+            'age',
+            'agent'
+        )
 
-# 2:50:19
 
 class LeadForm(forms.Form):
-    first_name = CharField() 
-    last_name = CharField()
-    age = IntegerField()
+    first_name = forms.CharField() 
+    last_name = forms.CharField()
+    age = forms.IntegerField()
