@@ -1,12 +1,37 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .form import LeadForm,LeadModelForm
-
 from .models import Agent, Lead
+from django.views.generic import TemplateView,ListView
 
-def landing_page(request):
-     return render(request,"landing.html")
 
+
+#! TimeLine : 3:44:46
+
+
+#! Landing Page 
+
+#* Leading Page in Genegric Template 
+class LandingPageView(TemplateView):
+    template_name = "landing.html"
+
+
+#? Landing Page in Functional Component 
+def Landing_Page(request):
+    return render(request,'landing.html')
+
+########################################################################CRUD#######################################################################################
+
+#! Leads List 
+
+#* Leads List in Genegric Template 
+
+class LeadListViews(ListView):
+    template_name='leads/lead_list.html'
+    queryset = Lead.objects.all()
+
+
+#? Leads List in Functional Component 
 
 def lead_list(request):
     leads = Lead.objects.all()
@@ -15,12 +40,32 @@ def lead_list(request):
     }
     return render(request,"leads/lead_list.html",context)
 
+
+###############################################################################################################################################################
+
+#! Leads Detail 
+
+#* Leads Detail  in Genegric Template 
+
+#? Leads Detail  in Functional Component 
+
+
 def lead_detail(request,pk):
     lead = Lead.objects.get(id=pk)
     context={
         'lead':lead
     }
     return render(request,"leads/lead_detail.html",context)
+
+
+####################################################################################################################################3############################
+
+#! Leads Create 
+
+#* Leads Create  in Genegric Template 
+
+#? Leads Create  in Functional Component 
+
 
 def lead_create(request):
     form = LeadModelForm()
@@ -65,6 +110,14 @@ def lead_create(request):
 #     }
 #     return render(request,'leads/lead_create.html',context)
 
+###########################################################################################################################################################
+
+
+#! Leads Update
+
+#* Leads Update  in Genegric Template 
+
+#? Leads Update  in Functional Component 
 
 def lead_update(request,pk):
     lead = Lead.objects.get(id=pk)
@@ -111,7 +164,19 @@ def lead_update(request,pk):
 #         'form':form
 #     }
 #     return render(request,'leads/lead_update.html',context)
+
+########################################################################################################################################
+
+#! Lead Delete 
+
+#* Lead Delete in Generic Templates 
+
+
+#? Lead Delete in Functional Component
+
 def lead_delete(request,pk):
     lead = Lead.objects.get(id=pk)
     lead.delete()
     return redirect("/leads")
+
+ #######################################################################################################################################
