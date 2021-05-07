@@ -40,13 +40,4 @@
   </div>
 </section>
 
-      <a href="{% url 'leads:lead-list' %}">Go Back</a>
-      <hr/>
-    <h1>This is the lead of {{lead.first_name}}</h1>
-    <p>Age of {{lead.first_name}} is {{lead.age}}</p>
-    <p>The agent responsible for this Lead is {{ lead.agent }}</p>
-    <hr/>
-    <a href="{% url 'leads:lead-update' lead.pk %}">Update</a>
-    <a href="{% url 'leads:lead-delete' lead.pk %}">Delete</a>
- 
 {% endblock content %}
