@@ -5,6 +5,15 @@ from .form import LeadForm,LeadModelForm
 from django.core.mail import send_mail
 from .models import Agent, Lead
 from django.views.generic import TemplateView,ListView,DetailView,CreateView,UpdateView,DeleteView
+from django.contrib.auth.forms import UserCreationForm
+
+#! Signup
+class SignupView(CreateView):
+    template_name = "registration/signup.html"
+    form_class = UserCreationForm
+
+    def get_success_url(self):
+        return resolve_url("login")
 
 
 #! Landing Page 
