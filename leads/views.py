@@ -1,7 +1,7 @@
 from django.db.models.query import QuerySet
 from django.shortcuts import render,redirect,resolve_url
 from django.http import HttpResponse
-from .form import LeadForm,LeadModelForm
+from .form import LeadForm,LeadModelForm,CustomUserCretionForm
 from django.core.mail import send_mail
 from .models import Agent, Lead
 from django.views.generic import TemplateView,ListView,DetailView,CreateView,UpdateView,DeleteView
@@ -10,7 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 #! Signup
 class SignupView(CreateView):
     template_name = "registration/signup.html"
-    form_class = UserCreationForm
+    form_class = CustomUserCretionForm
 
     def get_success_url(self):
         return resolve_url("login")
