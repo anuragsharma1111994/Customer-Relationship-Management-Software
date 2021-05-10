@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from .models import Agent, Lead
 from django.views.generic import TemplateView,ListView,DetailView,CreateView,UpdateView,DeleteView
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 #! Signup
 class SignupView(CreateView):
@@ -33,7 +34,7 @@ def Landing_Page(request):
 
 #* Leads List in Genegric Template 
 
-class LeadListViews(ListView):
+class LeadListViews(LoginRequiredMixin,ListView):
     template_name='leads/lead_list.html'
     queryset = Lead.objects.all()
     context_object_name = 'leads' # By Default it is object_list
@@ -54,7 +55,7 @@ def lead_list(request):
 #! Leads Detail 
 
 #* Leads Detail  in Genegric Template 
-class LeadDetailView(DetailView):
+class LeadDetailView(LoginRequiredMixin,DetailView):
     template_name="leads/lead_detail.html"
     queryset = Lead.objects.all()
     context_object_name='lead'
@@ -73,7 +74,7 @@ def lead_detail(request,pk):
 #! Leads Create 
 
 #* Leads Create  in Genegric Template 
-class LeadCreateView(CreateView):
+class LeadCreateView(LoginRequiredMixin,CreateView):
     template_name='leads/lead_create.html'
     form_class = LeadModelForm
 
@@ -145,7 +146,7 @@ def lead_create(request):
 
 #* Leads Update  in Genegric Template 
 
-class LeadUpdateView(UpdateView):
+class LeadUpdateView(LoginRequiredMixin,UpdateView):
     template_name = "leads/lead_update.html"
     queryset = Lead.objects.all()
     form_class = LeadModelForm
@@ -206,7 +207,7 @@ def lead_update(request,pk):
 #! Lead Delete 
 
 #* Lead Delete in Generic Templates 
-class LeadDeleteView(DeleteView):
+class LeadDeleteView(LoginRequiredMixin,DeleteView):
     template_name = 'leads/lead_delete.html'
     queryset = Lead.objects.all()
 
