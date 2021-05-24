@@ -36,9 +36,13 @@ def Landing_Page(request):
 
 class LeadListViews(LoginRequiredMixin,ListView):
     template_name='leads/lead_list.html'
-    queryset = Lead.objects.all()
     context_object_name = 'leads' # By Default it is object_list
 
+    def get_queryset(self):
+         querySet = Lead.objects.all()
+         if self.request.user.is_agent:
+             querySet = querySet.filter(agent__user = self.request.user)
+         return querySet
 
 #? Leads List in Functional Component 
 
