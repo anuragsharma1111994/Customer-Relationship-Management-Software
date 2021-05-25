@@ -7,3 +7,5 @@ class OrganisorAndLoginRequiredMixin(AccessMixin):
         if not request.user.isauthenticated or not request.user.is_organisor:
             return redirect("login")            
         return super().dispatch(request,*args,**kwargs)
+
+        # 5:56 
