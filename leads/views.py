@@ -39,10 +39,15 @@ class LeadListViews(LoginRequiredMixin,ListView):
     context_object_name = 'leads' # By Default it is object_list
 
     def get_queryset(self):
-         querySet = Lead.objects.all()
-         if self.request.user.is_agent:
-             querySet = querySet.filter(agent__user = self.request.user)
-         return querySet
+
+        user = self.request.user
+        if user.is_organisor:
+            querySet = Lead.objects.filter(organisation=user.userprofile)
+        else:
+            querySet = Lead.objects.filter(organisation=user.agent.organisation)
+            # Filtering for the agent that loged in 
+            querySet = querySet.filter(agent__user = self.request.user)
+        return querySet
 
 #? Leads List in Functional Component 
 
