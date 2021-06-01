@@ -1,5 +1,5 @@
 from django.db.models.query import QuerySet
-from django.shortcuts import render,redirect,resolve_url
+from django.shortcuts import render,redirect,resolve_url,reverse
 from django.http import HttpResponse
 from .form import LeadForm,LeadModelForm,CustomUserCretionForm
 from django.core.mail import send_mail
@@ -36,8 +36,18 @@ def Landing_Page(request):
 
 class LeadListViews(LoginRequiredMixin,ListView):
     template_name='leads/lead_list.html'
-    queryset = Lead.objects.all()
-    context_object_name = 'leads' # By Default it is object_list
+    context_object_name = "leads"
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        if user.is_organisor:
+            queryset = Lead.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organisation=user.agent.organisation)
+            # filter for the agent that is logged in
+            queryset = queryset.filter(agent__user=user)
+        return queryset
 
 
 #? Leads List in Functional Component 
@@ -57,8 +67,19 @@ def lead_list(request):
 #* Leads Detail  in Genegric Template 
 class LeadDetailView(LoginRequiredMixin,DetailView):
     template_name="leads/lead_detail.html"
-    queryset = Lead.objects.all()
-    context_object_name='lead'
+   
+    context_object_name = "lead"
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        if user.is_organisor:
+            queryset = Lead.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organisation=user.agent.organisation)
+            # filter for the agent that is logged in
+            queryset = queryset.filter(agent__user=user)
+        return queryset
 
 #? Leads Detail  in Functional Component 
 def lead_detail(request,pk):
@@ -79,18 +100,16 @@ class LeadCreateView(LoginRequiredMixin,CreateView):
     form_class = LeadModelForm
 
     def get_success_url(self):
-        return resolve_url("leads:lead-list")
+        return reverse("leads:lead-list")
 
     def form_valid(self, form):
-        # TODO Send Email
-
         send_mail(
-            subject="A New Lead Has Been Created",
-            message="Go To Site to see the new Lead",
-            from_email="testing@testAnu.com",
-            recipient_list=["testing@testAnu2.com"]
+            subject="A lead has been created",
+            message="Go to the site to see the new lead",
+            from_email="test@test.com",
+            recipient_list=["test2@test.com"]
         )
-        return super(LeadCreateView,self).form_valid(form)
+        return super(LeadCreateView, self).form_valid(form)
 
 
 #? Leads Create  in Functional Component 
@@ -148,8 +167,12 @@ def lead_create(request):
 
 class LeadUpdateView(LoginRequiredMixin,UpdateView):
     template_name = "leads/lead_update.html"
-    queryset = Lead.objects.all()
     form_class = LeadModelForm
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        return Lead.objects.filter(organisation=user.userprofile)
 
     def get_success_url(self):
         return resolve_url('leads:lead-list')
@@ -209,10 +232,13 @@ def lead_update(request,pk):
 #* Lead Delete in Generic Templates 
 class LeadDeleteView(LoginRequiredMixin,DeleteView):
     template_name = 'leads/lead_delete.html'
-    queryset = Lead.objects.all()
-
     def get_success_url(self):
-        return resolve_url('leads:lead-list')
+        return reverse("leads:lead-list")
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        return Lead.objects.filter(organisation=user.userprofile)
 
 #? Lead Delete in Functional Component
 
